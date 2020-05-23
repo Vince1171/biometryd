@@ -11,8 +11,6 @@ ifeq ($(ANDROID_VERSION_PATCH),)
     ANDROID_VERSION_PATCH := 0
 endif
 
-IS_ANDROID_8 := $(shell test $(ANDROID_VERSION_MAJOR) -ge 8 && echo true)
-
 include $(CLEAR_VARS)
 
 LOCAL_CFLAGS += \
@@ -22,11 +20,11 @@ LOCAL_CFLAGS += \
 
 UPAPI_PATH := $(LOCAL_PATH)/../../
 
-ifneq ($(IS_ANDROID_8),true)
+ifeq ($(strip $(ANDROID_VERSION_MAJOR)),8)
 LOCAL_CFLAGS += -std=gnu++0x
 endif
 
-ifeq ($(IS_ANDROID_8),true)
+ifeq ($(strip $(ANDROID_VERSION_MAJOR)),8)
 LOCAL_CFLAGS += \
     -Wno-unused-parameter
 endif
@@ -34,11 +32,13 @@ endif
 LOCAL_C_INCLUDES := \
 	$(UPAPI_PATH)/include
 
-ifeq ($(IS_ANDROID_8),true)
+ifeq ($(strip $(ANDROID_VERSION_MAJOR)),8)
 LOCAL_SRC_FILES += \
     biometry_fp_hidl_for_hybris.cpp
-else
-$(error "Android pre oreo not supported")
+endif
+ifeq ($(strip $(ANDROID_VERSION_MAJOR)),7)
+LOCAL_SRC_FILES += \
+    biometry_fp_hal_for_hybris.cpp
 endif
 
 LOCAL_MODULE := libbiometry_fp_api
@@ -54,7 +54,7 @@ LOCAL_SHARED_LIBRARIES := \
 	libhardware_legacy \
 	libdl
 
-ifeq ($(IS_ANDROID_8),true)
+ifeq ($(strip $(ANDROID_VERSION_MAJOR)),8)
 LOCAL_SHARED_LIBRARIES += \
     libhidlbase \
     libhidltransport \

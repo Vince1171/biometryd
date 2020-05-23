@@ -1,0 +1,3 @@
+IBiometricsFingerprint => FingerprintDaemonProxy.h
+Gatekeeper => Gatekeeper (easy ^^)
+HIDLToUFingerprintAcquiredInfo => hardware/libhardware/include/hardware/fingerprint.h
